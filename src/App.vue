@@ -1,70 +1,8 @@
 <template>
   <div class="app">
-    <div class="filtering">
-      <filter-section @update-filter="applyFilter" :info="paginationInfo"/>
-    </div>
-    <div class="listing">
-      <pagination-list 
-      :info="paginationInfo"
-      @change-page="fetchCharacters" />
-      <character-list :characters="filteredCharacters" />
-    </div>
+    <router-view></router-view>
   </div>
 </template>
-
-<script>
-import CharacterList from '@/components/CharacterList.vue'
-import PaginationList from '@/components/PaginationList.vue'
-import FilterSection from '@/components/FilterSection.vue'
-import axios from 'axios'
-
-export default {
-  name: 'App',
-  components: {
-    CharacterList,
-    PaginationList,
-    FilterSection
-  },
-  data() {
-    return {
-      characters: [],
-      filteredCharacters: [],
-      paginationInfo: {},
-      filters: {}
-    }
-  },
-  mounted() {
-    this.fetchCharacters()
-  },
-  methods: {
-    async fetchCharacters(page = "https://rickandmortyapi.com/api/character/?page=1") {
-      try {
-        const response = await axios.get(`${page}`)
-        this.characters = response.data.results
-        this.paginationInfo = response.data.info
-        console.log("Pagination info", response.data.info);
-        console.log(page);
-        this.applyFilter()
-      } catch (error) {
-        console.error(error)
-      }
-    },
-    applyFilter() {
-      console.log(this.filters.name);
-      
-      let filtered = this.characters
-      if (this.filters.name) {
-        filtered = filtered.filter(character => character.name.toLowerCase().includes(this.filters.name.toLowerCase()))
-      }
-      if (this.filters.status) {
-        filtered = filtered.filter(character => character.status.toLowerCase() === this.filters.status.toLowerCase())
-      }
-      this.filteredCharacters = filtered
-    }
-  }
-}
-</script>
-
 
 <style>
 body{
@@ -99,5 +37,6 @@ body{
   display: flex;
   flex-direction: column;
   gap: 20px;
+  padding: 20px 0px 40px 0px;
 }
 </style>
