@@ -1,8 +1,8 @@
-
-
 <template>
   <div class="app">
-    <filter-section @update-filter="applyFilter" :info="paginationInfo"/>
+    <div class="filtering">
+      <filter-section @update-filter="applyFilter" :info="paginationInfo"/>
+    </div>
     <div class="listing">
       <pagination-list 
       :info="paginationInfo"
@@ -87,11 +87,17 @@ body{
   display: flex;
   flex-direction: row;
   gap: 60px;
-  background-color: rgb(133, 133, 236);
+  background-color: #FFFCF7;
 }
+.filtering{
+  padding: 20px;
+  font-size: larger;
+  background-color: #A1B5D8;
+}
+
 .listing{
   display: flex;
   flex-direction: column;
-  background-color: rgb(133, 133, 236);
+  gap: 20px;
 }
 </style>

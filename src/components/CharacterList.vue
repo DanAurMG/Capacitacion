@@ -1,11 +1,12 @@
 <template>
-    
     <div class="character-list">
-      
-      <div v-for="character in characters" :key="character.id" class="character-card">
+      <div v-for="character in characters" :key="character.id" class="character-card" >
         <img :src="character.image" :alt="character.name" class="character-image"/>
-        <h3>{{ character.name }} - {{ character.id }}</h3>
-        <p>{{ character.status }} - {{ character.species }}</p>
+        <div class="character-name-stat">
+          <h3>{{ character.name }} </h3>
+          <h3>({{ character.status }} )</h3>
+        </div>
+        <p>{{ character.species }}</p>
         <p>{{ character.gender }}</p>
       </div>
     </div>
@@ -29,14 +30,38 @@
     gap: 20px;
   }
   .character-card {
-    width: 250px;
+    width: 230px;
     text-align: center;
+    border-radius: 20px;
+    background-color: #D3E7B1;
+  }
+  
+  .character-card:hover{
+    background-color: #97BD89;
+    cursor: pointer;
+    height: auto;
+    
+  }
+  .character-card:hover img{
+    opacity: 0.8;
+  }
+  
+  .character-image{
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    max-width: 230px;
+  }
+  
+  .character-name-stat{
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+  }
+  
+  .character-name-stat h3{
+    margin: 5px 0px 0px 0px;
   }
 
-  .character-image{
-    border-radius: 300px;
-    max-width: 200px;
-  }
 
   </style>
   
