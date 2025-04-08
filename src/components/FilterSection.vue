@@ -2,7 +2,8 @@
     <div class="filter">
       <p>Total de personajes:</p>
       <p>{{ info.count }}</p>
-      <input v-model="filter.name" placeholder="Search by name" />
+      <input v-model="filter.charName" placeholder="Search by name"  v-on:keyup.enter = "searchName" v-on:keyup = "searchName"/>
+      <button @click="searchName">Buscar nombre</button>
       <select v-model="filter.status">
         <option value="">All Status</option>
         <option value="Alive">Alive</option>
@@ -36,7 +37,12 @@
     methods: {
       applyFilter() {
         this.$emit('update-filter', { ...this.filter })
+      },
+      searchName(){
+        const character = this.filter.charName;
+        this.$emit('search-name', character);
       }
+
     }
   }
   </script>

@@ -68,8 +68,6 @@ export default {
 </script>
 
 <style>
-
-
 .go-back{
     background-color: transparent;
     border: solid rgb(235, 172, 79);

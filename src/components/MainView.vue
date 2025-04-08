@@ -1,13 +1,13 @@
 <template>
     <div class="app">
       <div class="filtering">
-        <filter-section @update-filter="applyFilter" :info="paginationInfo"/>
+        <filter-section @update-filter="applyFilter" @search-name="filterName" :info="paginationInfo"/>
       </div>
       <div class="listing">
         <pagination-list 
         :info="paginationInfo"
         @change-page="fetchCharacters" />
-        <character-list :characters="filteredCharacters" />
+        <character-list :characters="characters" />
       </div>
     </div>
   </template>
@@ -37,19 +37,17 @@
       this.fetchCharacters()
     },
     methods: {
-      async fetchCharacters(page = "https://rickandmortyapi.com/api/character/?page=1") {
+      async fetchCharacters(page) {
         try {
-          const response = await axios.get(`${page}`)
+          const url = !page ? "https://rickandmortyapi.com/api/character/?page=1" : page;
+          const response = await axios.get(`${url}`)
           this.characters = response.data.results
           this.paginationInfo = response.data.info
-          console.log("Pagination info", response.data.info);
-          console.log(page);
-          this.applyFilter()
         } catch (error) {
           console.error(error)
         }
       },
-      applyFilter() {
+      async applyFilter() {
         console.log(this.filters.name);
         
         let filtered = this.characters
@@ -60,6 +58,11 @@
           filtered = filtered.filter(character => character.status.toLowerCase() === this.filters.status.toLowerCase())
         }
         this.filteredCharacters = filtered
+      },
+      async filterName(characterName){
+        const response = await axios.get(`https://rickandmortyapi.com/api/character/?name=${characterName}`);
+        this.characters = response.data.results;
+        this.paginationInfo = response.data.info;
       }
     }
   }
