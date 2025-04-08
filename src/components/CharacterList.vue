@@ -1,8 +1,10 @@
 <template>
+    
     <div class="character-list">
+      
       <div v-for="character in characters" :key="character.id" class="character-card">
         <img :src="character.image" :alt="character.name" class="character-image"/>
-        <h3>{{ character.name }} - {{ key }}</h3>
+        <h3>{{ character.name }} - {{ character.id }}</h3>
         <p>{{ character.status }} - {{ character.species }}</p>
         <p>{{ character.gender }}</p>
       </div>

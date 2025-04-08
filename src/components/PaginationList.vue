@@ -1,5 +1,6 @@
 <template>
     <div class="pagination-list">
+      <p>Mover esto hasta arriba</p>
       <button 
         :disabled="!info.prev" 
         @click="changePage(info.prev)">
@@ -22,7 +23,10 @@
     },
     methods: {
       changePage(page) {
+        console.log("Nueva pagina", page);
+        
         this.$emit('change-page', page)
+
       }
     }
   }

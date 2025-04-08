@@ -1,5 +1,7 @@
 <template>
     <div class="filter">
+      <p>Total de personajes:</p>
+      <p>{{ info.count }}</p>
       <input v-model="filter.name" placeholder="Search by name" />
       <select v-model="filter.status">
         <option value="">All Status</option>
@@ -20,6 +22,9 @@
   <script>
   export default {
     name: 'FilterSection',
+    props:{
+      info: Object,
+    },
     data() {
       return {
         filter: {
@@ -39,6 +44,7 @@
   <style scoped>
   .filter {
     display: flex;
+    flex-direction: column;
     gap: 10px;
     margin-bottom: 20px;
   }

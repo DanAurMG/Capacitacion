@@ -2,11 +2,13 @@
 
 <template>
   <div class="app">
-    <filter-section @update-filter="applyFilter" />
-    <character-list :characters="filteredCharacters" />
-    <pagination-list 
+    <filter-section @update-filter="applyFilter" :info="paginationInfo"/>
+    <div class="listing">
+      <pagination-list 
       :info="paginationInfo"
       @change-page="fetchCharacters" />
+      <character-list :characters="filteredCharacters" />
+    </div>
   </div>
 </template>
 
@@ -28,7 +30,6 @@ export default {
       characters: [],
       filteredCharacters: [],
       paginationInfo: {},
-      currentPage: 1,
       filters: {}
     }
   },
@@ -36,11 +37,13 @@ export default {
     this.fetchCharacters()
   },
   methods: {
-    async fetchCharacters(page = 1) {
+    async fetchCharacters(page = "https://rickandmortyapi.com/api/character/?page=1") {
       try {
-        const response = await axios.get(`https://rickandmortyapi.com/api/character/?page=${page}`)
+        const response = await axios.get(`${page}`)
         this.characters = response.data.results
         this.paginationInfo = response.data.info
+        console.log("Pagination info", response.data.info);
+        console.log(page);
         this.applyFilter()
       } catch (error) {
         console.error(error)
@@ -64,12 +67,31 @@ export default {
 
 
 <style>
+body{
+  padding: 0px;
+  margin: 0px;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 0px;
+  padding: 0px;
+  margin: 0px;
+ 
+}
+.app{
+  display: flex;
+  flex-direction: row;
+  gap: 60px;
+  background-color: rgb(133, 133, 236);
+}
+.listing{
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(133, 133, 236);
 }
 </style>
