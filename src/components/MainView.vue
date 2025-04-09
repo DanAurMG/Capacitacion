@@ -1,7 +1,7 @@
 <template>
   <div class="app">
     <div class="filtering">
-      <filter-section @update-filter="setFilters" @search-name="filterName" :info="paginationInfo" />
+      <filter-section @update-filter="setFilters" @del-filters="filterName" :info="paginationInfo" />
     </div>
     <div class="listing">
       <pagination-list :info="paginationInfo" @change-page="applyFilter" />
@@ -142,50 +142,12 @@ export default {
       this.userFilters.status = filters.status ? `"${filters.status}"` : '';
       this.applyFilter();
     },
-    async filterName(characterName) {
-      const name = characterName ? `"${characterName}"` : null;
-      try {
-        const query = `
-              query{
-                  characters(filter: {
-                    ${name ? `name: ${name},` : ''}
-                  }) {
-                    info {
-                      count,
-                      next,
-                      pages,
-                      prev,
-                    }
-                    results {
-                      id,
-                      name,
-                      species,
-                      status,
-                      gender,
-                      image,
-                      location{
-                        name,
-                      }
-
-                    }
-                }
-              }
-            `
-        const responseGraphName = await axios({
-          url: "https://rickandmortyapi.com/graphql",
-          method: 'post',
-          data: {
-            query 
-          }
-        });
-        
-        this.characters = responseGraphName.data.data.characters.results;
-        this.paginationInfo = responseGraphName.data.data.characters.info;
-
-      } catch (err) {
-        console.log(err);
-
-      }
+    filterName() {
+      this.userFilters.name = "";
+      this.userFilters.specie = "";
+      this.userFilters.gender = "";
+      this.userFilters.status = "";
+      this.applyFilter();
     }
   }
 }

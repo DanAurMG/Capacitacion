@@ -3,7 +3,7 @@
       <p>Total de personajes:</p>
       <p>{{ info.count }}</p>
       <p>¡Busca por nombre!</p>
-      <input v-model="filter.name" placeholder="Search by name"  v-on:keyup.enter = "applyFilter" v-on:keyup="applyFilter"/>
+      <input v-model="filter.name" placeholder="Busca por nombre"  v-on:keyup.enter = "applyFilter" v-on:keyup="applyFilter"/>
 
       <p>¡O aplica alguno de los filtros!</p>
       <select v-model="filter.status">
@@ -24,6 +24,7 @@
         <option value="Female">Female</option>
       </select>
       <button @click="applyFilter">Apply</button>
+      <button @click="delFilter">Eliminar filtros</button>
     </div>
   </template>
   
@@ -48,13 +49,13 @@
     },
     methods: {
       applyFilter() {
-        console.log(this.filter);
-        
         this.$emit('update-filter', { ...this.filter })
-      },
-      searchName(){
-        const character = this.filter.name;
-        this.$emit('search-name', character);
+      },delFilter(){
+        this.filter.status = "";
+        this.filter.name = "";
+        this.filter.gender = "";
+        this.filter.species = "";
+        this.$emit('del-filters', );
       }
 
     }
