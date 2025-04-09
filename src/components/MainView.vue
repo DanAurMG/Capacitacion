@@ -35,51 +35,54 @@ export default {
     this.fetchCharacters()
   },
   methods: {
-    async fetchCharacters(page) {
+    async fetchCharacters() {
       try {
         //https://rickandmortyapi.com/graphql
-        const url = !page ? "https://rickandmortyapi.com/api/character/?page=1" : page;
-        const axios = require("axios")
         //No puedo pasar los parámetros como ${variable}
-
-        axios({
+        const responseGraph = await axios({
           url: "https://rickandmortyapi.com/graphql",
           method: 'post',
           data: {
             query: `
-              query PostsForChars() {
-                  characters(filter: {}) {
-                    info {
-                      count,
-                      next,
-                      pages,
-                      prev,
-                    }
-                    results {
+              query {
+                characters() {
+                  info {
+                    count,
+                    next,
+                    pages,
+                    prev,
+                  }
+                  results {
+                    id,
+                    name,
+                    species,
+                    status,
+                    gender,
+                    image,
+                    location{
                       name,
-                      species,
-                      status,
-                      gender,
-                      image,
-                      location{
-                        name,
-                      }
-
                     }
+                  }
                 }
               }
             `
           }
-        }).then((result) => {
-          console.log("Tus datos: ", result.data);
         });
-
-        const response = await axios.get(`${url}`)
-        console.log("datos con axios", response.data);
-        console.log(response.data.results);
+        console.log("con Graph");
         
-        this.characters = response.data.results
-        this.paginationInfo = response.data.info
+        console.log(responseGraph.data.data.characters.results);
+        console.log(responseGraph.data.data.characters.info);
+        
+        this.characters = responseGraph.data.data.characters.results;
+        this.paginationInfo = responseGraph.data.data.characters.info;
+        
+        // const url = !page ? "https://rickandmortyapi.com/api/character/?page=1" : page;
+        // const response = await axios.get(`${url}`)
+        // console.log("datos con axios", response.data);
+        // console.log(response.data.results);
+        
+        // this.characters = response.data.results
+        // this.paginationInfo = response.data.info
       } catch (error) {
         console.error(error)
       }
