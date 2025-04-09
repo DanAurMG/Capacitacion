@@ -142,15 +142,13 @@ export default {
       }
     },
     async filterName(characterName) {
+      const name = characterName ? `"${characterName}"` : null;
       try {
-
-        axios({
-          url: "https://rickandmortyapi.com/graphql",
-          method: 'post',
-          data: {
-            query: `
-              query PostsForChars {
-                  characters(filter: {name: ${characterName}}) {
+        const query = `
+              query{
+                  characters(filter: {
+                    ${name ? `name: ${name},` : ''}
+                  }) {
                     info {
                       count,
                       next,
@@ -171,16 +169,22 @@ export default {
                 }
               }
             `
+        const responseGraphName = await axios({
+          url: "https://rickandmortyapi.com/graphql",
+          method: 'post',
+          data: {
+            query 
           }
-        }).then((result) => {
-          console.log("Tus datos por nombre: ", result.data);
         });
+        
+        this.characters = responseGraphName.data.data.characters.results;
+        this.paginationInfo = responseGraphName.data.data.characters.info;
 
 
-        const response = await axios.get(`https://rickandmortyapi.com/api/character/?name=${characterName}`);
-        this.characters = response.data.results;
-        this.paginationInfo = response.data.info;
-        console.log(this.characters);
+        // const response = await axios.get(`https://rickandmortyapi.com/api/character/?name=${characterName}`);
+        // this.characters = response.data.results;
+        // this.paginationInfo = response.data.info;
+        // console.log(this.characters);
 
       } catch (err) {
         console.log(err);

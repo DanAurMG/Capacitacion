@@ -1,15 +1,14 @@
 <template>
   <div class="character-list">
-    <div v-for="character in characters" :key="character.id" class="character-card" href="#">
-      <b-button class="" :to="`/${character.id}`">
+    <b-button v-for="character in characters" :key="character.id" class="character-card" :to="`/${character.id}`">
+      <!-- <b-button class="character-card-link" :to="`/${character.id}`"> -->
         <img :src="character.image" :alt="character.name" class="character-image" />
         <div class="character-name-stat">
           <h3>{{ character.name }} </h3>
           <h3>({{ character.status }} )</h3>
         </div>
-      </b-button>
-    </div>
-
+      <!-- </b-button> -->
+    </b-button>
   </div>
 </template>
 
@@ -23,25 +22,39 @@ export default {
 </script>
 
 <style scoped>
+
 .character-list {
   display: flex;
-  justify-content: space-evenly;
-  align-items: center;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 20px;
+  padding: 20px;
+
 }
 
 .character-card {
-  width: 230px;
+  /* width: 260px;
+  height: 350px;
   text-align: center;
   border-radius: 20px;
+  overflow: hidden; */
+  border: transparent;
+  width: 260px;
+  height: 400px;
   background-color: #D3E7B1;
+  color: black;
+  border-radius: 20px;
+  overflow: hidden; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  justify-content: space-evenly;
 }
 
 .character-card:hover {
   background-color: #97BD89;
   cursor: pointer;
-  height: auto;
 
 }
 

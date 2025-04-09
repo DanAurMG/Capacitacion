@@ -3,7 +3,7 @@
       <p>Total de personajes:</p>
       <p>{{ info.count }}</p>
       <p>¡Busca por nombre!</p>
-      <input v-model="filter.name" placeholder="Search by name"  v-on:keyup.enter = "searchName"/>
+      <input v-model="filter.name" placeholder="Search by name"  v-on:keyup.enter = "searchName" v-on:keyup="searchName"/>
 
       <p>¡O aplica alguno de los filtros!</p>
       <select v-model="filter.status">
