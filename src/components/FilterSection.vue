@@ -48,6 +48,8 @@
     },
     methods: {
       applyFilter() {
+        console.log(this.filter);
+        
         this.$emit('update-filter', { ...this.filter })
       },
       searchName(){

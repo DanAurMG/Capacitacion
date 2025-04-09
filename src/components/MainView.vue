@@ -1,10 +1,10 @@
 <template>
   <div class="app">
     <div class="filtering">
-      <filter-section @update-filter="applyFilter" @search-name="filterName" :info="paginationInfo" />
+      <filter-section @update-filter="setFilters" @search-name="filterName" :info="paginationInfo" />
     </div>
     <div class="listing">
-      <pagination-list :info="paginationInfo" @change-page="fetchCharacters" />
+      <pagination-list :info="paginationInfo" @change-page="applyFilter" />
       <character-list :characters="characters" />
     </div>
   </div>
@@ -28,14 +28,17 @@ export default {
       characters: [],
       filteredCharacters: [],
       paginationInfo: {},
-      filters: {}
+      userFilters: {}
     }
   },
   mounted() {
-    this.fetchCharacters()
+    this.applyFilter()
   },
   methods: {
     async fetchCharacters() {
+      
+      
+      
       try {
         //https://rickandmortyapi.com/graphql
         //No puedo pasar los parámetros como ${variable}
@@ -76,70 +79,68 @@ export default {
         this.characters = responseGraph.data.data.characters.results;
         this.paginationInfo = responseGraph.data.data.characters.info;
         
-        // const url = !page ? "https://rickandmortyapi.com/api/character/?page=1" : page;
-        // const response = await axios.get(`${url}`)
-        // console.log("datos con axios", response.data);
-        // console.log(response.data.results);
-        
-        // this.characters = response.data.results
-        // this.paginationInfo = response.data.info
       } catch (error) {
         console.error(error)
       }
     },
-    async applyFilter(filters) {
-
-      const params = {
-        status: filters.status,
-        species: filters.species,
-        gender: filters.gender,
-        name: filters.name,
-      }
-
+    async applyFilter( ) {
+    //TODO: use v-model to bind pagination component with MainView instead of using url params
+    //TODO: study not only v-model but watchers and computed 
+      const currentPage = this.$route.query.page ?  `${this.$route.query.page}` : 1;
+      console.log("url obtenida----", this.$route.query.page);
+      console.log(currentPage);
+      
       try {
 
-
-        axios({
+        const query = `
+          query{
+            characters(
+            ${currentPage ? `page: ${currentPage},` : 1}
+            filter: {
+              ${this.userFilters.name ? `name: ${this.userFilters.name},` : '' }
+              ${this.userFilters.specie ?  `species: ${this.userFilters.specie},` : '' }
+              ${this.userFilters.gender ?  `gender: ${this.userFilters.gender}, ` : '' }
+              ${this.userFilters.status ?  `status: ${this.userFilters.status}, ` : '' }
+            }){
+              info {
+                count,
+                next,
+                pages,
+                prev,
+              }results{
+                id,
+                name,
+                species,
+                status,
+                gender,
+                image,
+                location{
+                  name,
+                }
+              }
+            }
+          }
+        `
+        const responseGraphFilters = await axios({
           url: "https://rickandmortyapi.com/graphql",
           method: 'post',
           data: {
-            query: `
-              query PostsForChars {
-                  characters(filter: { name: ${filters.name}, status: ${filters.status}, species: ${filters.species}, gender: ${filters.gender}}) {
-                    info {
-                      count,
-                      next,
-                      pages,
-                      prev,
-                    }
-                    results {
-                      name,
-                      species,
-                      status,
-                      gender,
-                      image,
-                      location{
-                        name,
-                      }
-
-                    }
-                }
-              }
-            `
+            query
           }
-        }).then((result) => {
-          console.log("Tus datos filtrados: ", result.data);
         });
 
-
-        const response = await axios.get("https://rickandmortyapi.com/api/character/", { params });
-        this.characters = response.data.results;
-        this.paginationInfo = response.data.info;
-        console.log(this.characters);
+        this.characters = responseGraphFilters.data.data.characters.results;
+        this.paginationInfo = responseGraphFilters.data.data.characters.info;
 
       } catch (error) {
         console.log(error);
       }
+    },setFilters(filters = ""){
+      this.userFilters.name = filters.name ? `"${filters.name}"` : '';
+      this.userFilters.specie = filters.species ? `"${filters.species}"` : '';
+      this.userFilters.gender = filters.gender ? `"${filters.gender}"` : '';
+      this.userFilters.status = filters.status ? `"${filters.status}"` : '';
+      this.applyFilter();
     },
     async filterName(characterName) {
       const name = characterName ? `"${characterName}"` : null;
@@ -156,6 +157,7 @@ export default {
                       prev,
                     }
                     results {
+                      id,
                       name,
                       species,
                       status,
@@ -179,12 +181,6 @@ export default {
         
         this.characters = responseGraphName.data.data.characters.results;
         this.paginationInfo = responseGraphName.data.data.characters.info;
-
-
-        // const response = await axios.get(`https://rickandmortyapi.com/api/character/?name=${characterName}`);
-        // this.characters = response.data.results;
-        // this.paginationInfo = response.data.info;
-        // console.log(this.characters);
 
       } catch (err) {
         console.log(err);
