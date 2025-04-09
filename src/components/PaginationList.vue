@@ -1,41 +1,52 @@
 <template>
   <div class="pagination-list">
-    
-    <span>Page {{ getCurrentPage() }} of {{ info.pages }}</span>
+    <span>localPage: {{ localPage }}</span>
+    <br><br>
+    <span>Page {{ localPage }} of {{ info.pages }}</span>
 
     <div class="overflow-auto">
-      <b-pagination-nav @page-click="changePageBoot()" :link-gen="linkGen" :number-of-pages="info.pages" use-router></b-pagination-nav>
+      <b-pagination-nav 
+        v-model="localPage"
+        :link-gen="linkGen" 
+        :number-of-pages="info.pages" 
+        use-router
+        />
     </div>
 
   </div>
 </template>
 
 <script>
-
-
 export default {
   name: 'PaginationList',
   props: {
-    info: Object
+    info: Object,
+    value: { 
+      type: Number,
+      default: 1
+    }
+  },
+  data() {
+    return {
+      localPage: this.value 
+    };
+  },
+  watch: {
+    value(newVal) {
+      console.log("newVal: ", newVal);
+      this.localPage = newVal;
+    },
+    localPage() {
+      // this.$emit('input', newVal); 
+      this.$emit('change-page', this.localPage);  
+    }
   },
   mounted() {
     console.log("info prop: ", this.info);
-
   },
   methods: {
-    changePageBoot(){
-      console.log();
-      setTimeout(() => {
-        this.$emit('change-page')
-      },10)
-    }
-    , getCurrentPage() {
-      const currentPage = this.$route.query.page ?  `${this.$route.query.page}` : 1;
-      return currentPage
-
-    }, linkGen(pageNum) {
+    linkGen(pageNum) {
       return pageNum === 1 ? '?' : `?page=${pageNum}`
-
     }
   }
 }

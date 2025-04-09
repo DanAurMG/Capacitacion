@@ -4,26 +4,27 @@
       <filter-section @update-filter="setFilters" @del-filters="filterName" :info="paginationInfo" />
     </div>
     <div class="listing">
-      page: {{ page }}
-      <!-- <pagination-list v-model="page" :info="paginationInfo" @change-page="applyFilter" /> -->
-
-
-
-      <pagination-list :value="page" :info="paginationInfo" @change-page="applyFilter" />
-
-
-
-
+      <pagination-list v-model="page" :info="paginationInfo" @change-page="changePage" />
       <character-list :characters="characters" />
     </div>
   </div>
 </template>
+
+
+<script setup>
+const page = ref(null);
+console.log(page);
+
+</script>
 
 <script>
 import CharacterList from '@/components/CharacterList.vue'
 import PaginationList from '@/components/PaginationList.vue'
 import FilterSection from '@/components/FilterSection.vue'
 import axios from 'axios'
+import {ref} from 'vue'
+
+
 
 export default {
   name: 'MainView',
@@ -38,11 +39,11 @@ export default {
       filteredCharacters: [],
       paginationInfo: {},
       userFilters: {},
-      page: 1
+      page: 1,
     }
   },
   mounted() {
-    this.applyFilter(1)
+    this.applyFilter()
   },
   methods: {
     async fetchCharacters() {
@@ -93,15 +94,19 @@ export default {
         console.error(error)
       }
     },
-    async applyFilter( newPage ) {
+    async applyFilter( ) {
     //TODO: use v-model to bind pagination component with MainView instead of using url params
     //TODO: study not only v-model but watchers and computed 
-      this.page = newPage;
+      const currentPage = 1;
+      console.log("url obtenida----", this.$route.query.page);
+      console.log(currentPage);
+      
       try {
+
         const query = `
           query{
             characters(
-            ${this.page ? `page: ${this.page},` : 1}
+            ${currentPage ? `page: ${currentPage},` : 1}
             filter: {
               ${this.userFilters.name ? `name: ${this.userFilters.name},` : '' }
               ${this.userFilters.specie ?  `species: ${this.userFilters.specie},` : '' }
@@ -138,28 +143,75 @@ export default {
         this.characters = responseGraphFilters.data.data.characters.results;
         this.paginationInfo = responseGraphFilters.data.data.characters.info;
 
-        if(this.page > this.paginationInfo.pages){
-          this.page = 1;
-        }
+      } catch (error) {
+        console.log(error);
+      }
+    },async changePage( ) {
+    //TODO: use v-model to bind pagination component with MainView instead of using url params
+    //TODO: study not only v-model but watchers and computed 
+      const currentPage = this.$route.query.page ?  `${this.$route.query.page}` : 1;
+      console.log("url obtenida----", this.$route.query.page);
+      console.log(currentPage);
+      
+      try {
+
+        const query = `
+          query{
+            characters(
+            ${currentPage ? `page: ${currentPage},` : 1}
+            filter: {
+              ${this.userFilters.name ? `name: ${this.userFilters.name},` : '' }
+              ${this.userFilters.specie ?  `species: ${this.userFilters.specie},` : '' }
+              ${this.userFilters.gender ?  `gender: ${this.userFilters.gender}, ` : '' }
+              ${this.userFilters.status ?  `status: ${this.userFilters.status}, ` : '' }
+            }){
+              info {
+                count,
+                next,
+                pages,
+                prev,
+              }results{
+                id,
+                name,
+                species,
+                status,
+                gender,
+                image,
+                location{
+                  name,
+                }
+              }
+            }
+          }
+        `
+        const responseGraphFilters = await axios({
+          url: "https://rickandmortyapi.com/graphql",
+          method: 'post',
+          data: {
+            query
+          }
+        });
+
+        this.characters = responseGraphFilters.data.data.characters.results;
+        this.paginationInfo = responseGraphFilters.data.data.characters.info;
 
       } catch (error) {
         console.log(error);
       }
-    },
-    setFilters(filters = ""){
-      console.log('buscando..')
+    }
+    ,setFilters(filters = ""){
       this.userFilters.name = filters.name ? `"${filters.name}"` : '';
       this.userFilters.specie = filters.species ? `"${filters.species}"` : '';
       this.userFilters.gender = filters.gender ? `"${filters.gender}"` : '';
       this.userFilters.status = filters.status ? `"${filters.status}"` : '';
-      this.applyFilter(1);
+      this.applyFilter();
     },
     filterName() {
       this.userFilters.name = "";
       this.userFilters.specie = "";
       this.userFilters.gender = "";
       this.userFilters.status = "";
-      this.applyFilter(1);
+      this.applyFilter();
     }
   }
 }

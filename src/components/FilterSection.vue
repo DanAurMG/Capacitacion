@@ -19,7 +19,7 @@
         <option value="Robot">Robot</option>
       </select>
       <select v-model="filter.gender">
-        <option value="">All species</option>
+        <option value="">All genders</option>
         <option value="Male">Male</option>
         <option value="Female">Female</option>
       </select>

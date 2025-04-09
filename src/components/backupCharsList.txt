@@ -47,3 +47,35 @@ Mi componente de paginación pipipi
         Next
       </b-button>
     </div>
+
+
+  SCRIPT PaginationList
+
+  <script>
+export default {
+  name: 'PaginationList',
+  props: {
+    info: Object
+  },
+  mounted() {
+    console.log("info prop: ", this.info);
+
+  },
+  methods: {
+    changePageBoot(){
+      console.log();
+      setTimeout(() => {
+        this.$emit('change-page')
+      },10)
+    }
+    , getCurrentPage() {
+      const currentPage = this.$route.query.page ?  `${this.$route.query.page}` : 1;
+      return currentPage
+
+    }, linkGen(pageNum) {
+      return pageNum === 1 ? '?' : `?page=${pageNum}`
+
+    }
+  }
+}
+</script>
