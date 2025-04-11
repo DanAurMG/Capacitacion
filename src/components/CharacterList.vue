@@ -1,6 +1,6 @@
 <template>
   <div class="character-list">
-    <b-button v-for="character in characters" :key="character.id" class="character-card" :to="`/${character.id}`">
+    <b-button v-for="character in charactersList" :key="character.id" class="character-card" :to="`/${character.id}`">
       <!-- <b-button class="character-card-link" :to="`/${character.id}`"> -->
         <img :src="character.image" :alt="character.name" class="character-image" />
         <div class="character-name-stat">
@@ -16,7 +16,7 @@
 export default {
   name: 'CharacterList',
   props: {
-    characters: Array
+    charactersList: Array
   }
 }
 </script>

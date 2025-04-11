@@ -4,17 +4,17 @@
       <filter-section @update-filter="setFilters" @del-filters="filterName" :info="paginationInfo" />
     </div>
     <div class="listing">
-      page: {{ page }}
       <!-- <pagination-list v-model="page" :info="paginationInfo" @change-page="applyFilter" /> -->
+      page: {{ page }}
 
 
 
-      <pagination-list :value="page" :info="paginationInfo" @change-page="applyFilter" />
+      <PaginationList :value="page" :info="paginationInfo" @change-page="applyFilter" />
 
 
 
 
-      <character-list :characters="characters" />
+      <character-list :charactersList="characters1" />
     </div>
   </div>
 </template>
@@ -34,7 +34,7 @@ export default {
   },
   data() {
     return {
-      characters: [],
+      characters1: [],
       filteredCharacters: [],
       paginationInfo: {},
       userFilters: {},
@@ -86,7 +86,7 @@ export default {
         console.log(responseGraph.data.data.characters.results);
         console.log(responseGraph.data.data.characters.info);
         
-        this.characters = responseGraph.data.data.characters.results;
+        this.characters1 = responseGraph.data.data.characters.results;
         this.paginationInfo = responseGraph.data.data.characters.info;
         
       } catch (error) {
@@ -135,7 +135,7 @@ export default {
           }
         });
 
-        this.characters = responseGraphFilters.data.data.characters.results;
+        this.characters1 = responseGraphFilters.data.data.characters.results;
         this.paginationInfo = responseGraphFilters.data.data.characters.info;
 
         if(this.page > this.paginationInfo.pages){
